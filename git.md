@@ -1,4 +1,4 @@
-# Git Cheatsheet - Colection
+# Git Cheatsheet - colection
 
 ## Setup Inicial do Repositório
 
@@ -12,6 +12,10 @@ git init
 
 ```bash
 git remote add origin https://github.com/davitalbert1/colection.git
+```
+
+```bash
+git remote add origin git@github.com:davitalbert1/colection.git
 ```
 
 ### Verificar remoto
@@ -61,11 +65,11 @@ Hi davitalbert1! You've successfully authenticated, but GitHub does not provide 
 ## Alterar repositório para SSH
 
 ```bash
-git remote set-url origin git@github.com:davitalbert1/colection.git
+git remote set-url origin https://github.com/davitalbert1/colection.git
 ```
 
 ```bash
-git remote add origin git@github.com:davitalbert1/colection.git
+git remote set-url origin git@github.com:davitalbert1/colection.git
 ```
 
 ## Confirmar alteração
