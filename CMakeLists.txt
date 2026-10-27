@@ -41,7 +41,7 @@ if (WIN32)
 endif()
 
 if (MINGW)
-    target_compile_options(CollectionArchive PRIVATE -Wall -O2)
+    target_compile_options(CollectionArchive PRIVATE -Wall -O2 -finput-charset=UTF-8 -fexec-charset=UTF-8)
     target_link_options(CollectionArchive PRIVATE -static-libgcc -static-libstdc++)
     target_compile_definitions(CollectionArchive PRIVATE SQLITE_OMIT_LOAD_EXTENSION)
 endif()

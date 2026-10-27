@@ -21,6 +21,12 @@ cmake -S . -B build -G "MinGW Makefiles"
 cmake --build build
 ```
 
+## Execução
+
+```bash
+./build/CollectionArchive.exe
+```
+
 No Windows/PowerShell, se `mingw32-make` não estiver no PATH, use o shell do MSYS2 (MINGW64) ou informe `-DCMAKE_MAKE_PROGRAM=D:/msys64/mingw64/bin/mingw32-make.exe`.
 
 O executável fica em `build/CollectionArchive.exe`.

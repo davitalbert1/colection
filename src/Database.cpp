@@ -124,6 +124,7 @@ bool Database::migrate() {
         );
         CREATE INDEX IF NOT EXISTS idx_images_item ON images(item_id, position);
     )";
+
     if (!exec(schemaV1)) return false;
     return exec("PRAGMA user_version = 1;");
 }

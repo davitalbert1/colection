@@ -1,4 +1,4 @@
-﻿// ExportaÃ§Ã£o e importaÃ§Ã£o (Passos 43-55)
+﻿// Exportação e importação (Passos 43-55)
 #include "ImportExport.h"
 #include "Database.h"
 #include "Model.h"
@@ -42,7 +42,7 @@ namespace {
     }
 }
 
-// serializaÃ§Ã£o de dados em JSON
+// serialização de dados em JSON
 static json itemsToJson(Database& db, ImageManager& imgs, const std::vector<int64_t>& itemIds,
                         std::vector<ItemImage>& allImages) {
     ItemRepository items(db);
@@ -132,7 +132,7 @@ ExportResult ImportExport::exportData(const std::string& jsonStr, const std::vec
     }
     ExportResult r;
     r.ok = writeFile(path, out);
-    if (!r.ok) r.error = "NÃ£o foi possÃ­vel gravar o arquivo: " + path;
+    if (!r.ok) r.error = "Não foi possível gravar o arquivo: " + path;
     return r;
 }
 
@@ -249,7 +249,7 @@ bool ImportExport::importFile(const std::string& path, const std::vector<Conflic
     std::map<int64_t, int64_t> modelMap, folderMap, fieldMap, itemMap;
     Database& db = m_db;
     bool ok = db.inTransaction([&]{
-        // 1. Modelos (Passo 50 â€” conflitos)
+        // 1. Modelos (Passo 50 — conflitos)
         for (auto& jm : data.value("models", json::array())) {
             int64_t oldId = jm["id"];
             std::string name = jm.value("name", "");

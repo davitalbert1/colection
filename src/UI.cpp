@@ -11,7 +11,7 @@
 #include <cstdio>
 #include <cstring>
 
-// caminho do arquivo selecionado para importaÃ§Ã£o
+// caminho do arquivo selecionado para importação
 static std::string g_importPath;
 
 using json = nlohmann::json;
@@ -84,7 +84,7 @@ void UI::refreshItemCache() {
     m_dirtyItems = false;
 }
 
-// tÃ­tulo detectado (Passo 35)
+// título detectado (Passo 35)
 std::string UI::displayTitle(const ItemSummary& it) {
     if (!it.title.empty()) return it.title;
     return it.modelName + " #" + std::to_string(it.item.id);
@@ -111,13 +111,13 @@ void UI::draw() {
     drawModelEditor();
     drawConfirmDialogs();
 
-    // DiÃ¡logo de importaÃ§Ã£o (resumo â€” Passo 49)
+    // Diálogo de importação (resumo — Passo 49)
     if (m_showImportSummary && m_import.ok) {
-        ImGui::OpenPopup("ImportaÃ§Ã£o");
+        ImGui::OpenPopup("Importação");
         m_showImportSummary = false;
         m_confirmSecondary = true;
     }
-    if (m_confirmSecondary && ImGui::BeginPopupModal("ImportaÃ§Ã£o", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+    if (m_confirmSecondary && ImGui::BeginPopupModal("Importação", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         ImGui::Text("Modelos: %d", m_import.models);
         ImGui::Text("Pastas: %d", m_import.folders);
         ImGui::Text("Itens: %d", m_import.items);
@@ -130,8 +130,8 @@ void UI::draw() {
         ImGui::SameLine();
         if (ImGui::Button("Importar", ImVec2(120,0))) {
             std::string err;
-            if (m_ie.importFile(g_importPath, {}, err)) notify("âœ“ ImportaÃ§Ã£o concluÃ­da.");
-            else notify("âœ• " + err, true);
+            if (m_ie.importFile(g_importPath, {}, err)) notify("✔ Importação concluída.");
+            else notify("✘ " + err, true);
             m_confirmSecondary = false;
             m_dirtyItems = true;
             ImGui::CloseCurrentPopup();
@@ -139,7 +139,7 @@ void UI::draw() {
         ImGui::EndPopup();
     }
 
-    // NotificaÃ§Ã£o temporÃ¡ria (Passo 54)
+    // Notificação temporária (Passo 54)
     if (m_notifyTime > 0.f) {
         m_notifyTime -= io.DeltaTime;
         if (!m_error.empty()) {
@@ -219,7 +219,7 @@ void UI::drawScreen() {
 }
 
 void UI::drawHome() {
-    // Passo 65 â€” pÃ¡gina inicial com estatÃ­sticas
+    // Passo 65 — página inicial com estatísticas
     int64_t nModels = m_models.getAll().size();
     int64_t nFolders = m_folders.getAll().size();
     int64_t nItems = m_items.countAll();
@@ -258,7 +258,7 @@ void UI::drawHome() {
                 m_confirmSecondary = true;
                 ImGui::CloseCurrentPopup();
             }
-            else notify("âœ• " + m_import.error, true);
+            else notify("✘ " + m_import.error, true);
         }
         ImGui::SameLine();
         if (ImGui::Button("Fechar")) ImGui::CloseCurrentPopup();
@@ -282,9 +282,9 @@ void UI::drawItems() {
     ImGui::SameLine();
     if (m_currentFolder) {
         Folder f;
-        if (m_folders.get(*m_currentFolder, f) && !f.title.empty()) ImGui::TextColored(ImVec4(0.55f,0.56f,0.60f,1.f), "Â· %s", f.title.c_str());
+        if (m_folders.get(*m_currentFolder, f) && !f.title.empty()) ImGui::TextColored(ImVec4(0.55f,0.56f,0.60f,1.f), "· %s", f.title.c_str());
         ImGui::SameLine();
-        if (ImGui::SmallButton("â† voltar")) {
+        if (ImGui::SmallButton("← voltar")) {
             m_currentFolder.reset();
             m_dirtyItems = true;
         }
@@ -296,7 +296,7 @@ void UI::drawItems() {
         m_editor.folderId = m_currentFolder;
     }
 
-    // SeleÃ§Ã£o mÃºltipla (Passo 41)
+    // Seleção múltipla (Passo 41)
     if (!m_selectedIds.empty()) {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.16f,0.20f,0.30f,1.f));
         ImGui::BeginChild("##selbar", ImVec2(0, 44), ImGuiChildFlags_Borders);
@@ -304,7 +304,7 @@ void UI::drawItems() {
         ImGui::SameLine();
         if (ImGui::Button("Exportar")) {
             m_ie.exportItems(m_selectedIds, "export.collection");
-            notify("âœ“ Exportado para export.collection");
+            notify("✔ Exportado para export.collection");
         }
         ImGui::SameLine();
         if (ImGui::Button("Mover para pasta")) ImGui::OpenPopup("##movesel");
@@ -322,7 +322,7 @@ void UI::drawItems() {
                 ImGui::CloseCurrentPopup();
             }
             for (auto& f : m_folders.getAll()) {
-                if (ImGui::MenuItem(f.title.empty() ? "Pasta sem tÃ­tulo" : f.title.c_str())) {
+                if (ImGui::MenuItem(f.title.empty() ? "Pasta sem título" : f.title.c_str())) {
                     for (auto id : m_selectedIds) {
                         Item it;
                         if (m_items.get(id, it)) {
@@ -344,17 +344,21 @@ void UI::drawItems() {
             m_confirmSecondary = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Limpar seleÃ§Ã£o")) m_selectedIds.clear();
+        if (ImGui::Button("Limpar seleção")) m_selectedIds.clear();
         ImGui::EndChild();
         ImGui::PopStyleColor();
     }
 
-    // Grid (Passo 33) â€” cÃ©lula fixa, miniatura = primeira imagem (Passo 34)
+    // Grid (Passo 33) — célula fixa, miniatura = primeira imagem (Passo 34)
     const float cellW = 170, cellH = 210, thumbH = 130;
     int cols = std::max(1, (int)((ImGui::GetContentRegionAvail().x) / (cellW + 10)));
+    float gridW = cols * (cellW + 10) - 10;
+    float availW = ImGui::GetContentRegionAvail().x;
+    float offsetX = (availW > gridW) ? (availW - gridW) * 0.5f : 0.f;
     int idx = 0;
     for (auto& s : m_itemCache) {
         if (idx % cols != 0) ImGui::SameLine();
+        else if (offsetX > 0.f) ImGui::SetCursorPosX(ImGui::GetCursorPosX() + offsetX);
         ImGui::PushID((int)s.item.id);
         ImGui::BeginChild("cell", ImVec2(cellW, cellH), ImGuiChildFlags_Borders);
         ImVec2 c0 = ImGui::GetCursorPos();
@@ -398,7 +402,7 @@ void UI::drawItems() {
 void UI::drawFolders() {
     ImGui::TextUnformatted("Pastas");
     ImGui::SameLine(ImGui::GetWindowWidth() - 130);
-    if (ImGui::Button("+ Nova pasta")) ImGui::OpenPopup("##newfolder");
+    if (ImGui::Button("+ Nova pasta")) ImGui::OpenPopup("Nova pasta");
     if (ImGui::BeginPopupModal("Nova pasta", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         static char name[256] = "";
         ImGui::InputTextWithHint("##fn", "Nome da pasta (opcional)", name, sizeof(name));
@@ -419,7 +423,7 @@ void UI::drawFolders() {
     ImGui::Separator();
     for (auto& f : m_folders.getAll()) {
         ImGui::PushID((int)f.id);
-        const char* title = f.title.empty() ? "Pasta sem tÃ­tulo" : f.title.c_str(); // Passo 36
+        const char* title = f.title.empty() ? "Pasta sem título" : f.title.c_str(); // Passo 36
         if (ImGui::SmallButton("Abrir")) {
             m_currentFolder = f.id;
             setScreen(Screen::Items);
@@ -441,7 +445,7 @@ void UI::drawFolders() {
         ImGui::SameLine();
         if (ImGui::SmallButton("Exportar")) {
             m_ie.exportFolder(f.id, "pasta_" + std::to_string(f.id) + ".collection");
-            notify("âœ“ Pasta exportada.");
+            notify("✔ Pasta exportada.");
         }
         ImGui::SameLine();
         if (ImGui::SmallButton("Excluir")) {
@@ -455,25 +459,25 @@ void UI::drawFolders() {
 
 void UI::drawSettings() {
     // Passo 66
-    ImGui::TextUnformatted("ConfiguraÃ§Ãµes");
+    ImGui::TextUnformatted("Configurações");
     ImGui::Separator();
     ImGui::Text("Banco de dados: data/collection.db");
-    ImGui::Text("VersÃ£o do schema: %d", m_db.schemaVersion());
-    ImGui::Text("Tema: Escuro (padrÃ£o)");
-    ImGui::Checkbox("ConfirmaÃ§Ã£o antes de excluir", &m_confirmDeletes);
+    ImGui::Text("Versão do schema: %d", m_db.schemaVersion());
+    ImGui::Text("Tema: Escuro (padrão)");
+    ImGui::Checkbox("Confirmação antes de excluir", &m_confirmDeletes);
     ImGui::Checkbox("Cache de imagens", &m_useImageCache);
     ImGui::Separator();
     ImGui::Text("Itens em cache de texturas: %zu", m_imgs.cacheSize());
     ImGui::SameLine();
     if (ImGui::SmallButton("Limpar cache")) {
         m_imgs.clearCache();
-        notify("âœ“ Cache limpo.");
+        notify("✔ Cache limpo.");
     }
     ImGui::Dummy(ImVec2(0,10));
     ImGui::TextColored(ImVec4(0.55f,0.56f,0.60f,1.f), "Exportar / Importar");
-    if (ImGui::Button("Exportar toda a coleÃ§Ã£o")) {
+    if (ImGui::Button("Exportar toda a coleção")) {
         auto r = m_ie.exportAll("colecao_completa.collection");
-        notify(r.ok ? "âœ“ ColeÃ§Ã£o exportada." : "âœ• " + r.error, !r.ok);
+        notify(r.ok ? "✔ Coleção exportada." : "✘ " + r.error, !r.ok);
     }
     ImGui::SameLine();
     if (ImGui::Button("Importar")) {
@@ -484,7 +488,7 @@ void UI::drawSettings() {
             g_importPath = fn;
             m_import = m_ie.inspect(fn);
             if (m_import.ok) m_confirmSecondary = true;
-            else notify("âœ• " + m_import.error, true);
+            else notify("✘ " + m_import.error, true);
         }
         if (f) _pclose(f);
     }
@@ -503,7 +507,7 @@ void UI::drawModels() {
         ImGui::PushID((int)m.id);
         ImGui::BeginChild("mrow", ImVec2(0, 64), ImGuiChildFlags_Borders);
         ImGui::TextUnformatted(m.name.c_str());
-        ImGui::TextColored(ImVec4(0.55f,0.56f,0.60f,1.f), "%lld campo(s) Â· %lld item(ns)",
+        ImGui::TextColored(ImVec4(0.55f,0.56f,0.60f,1.f), "%lld campo(s) · %lld item(ns)",
             (long long)m_models.getFields(m.id).size(), (long long)m_models.itemCount(m.id));
         ImGui::SameLine(ImGui::GetWindowWidth() - 100);
         if (ImGui::Button("Editar")) {
@@ -518,7 +522,7 @@ void UI::drawModels() {
         ImGui::SameLine();
         if (ImGui::Button("Exportar")) {
             m_ie.exportModels({m.id}, "modelo_" + std::to_string(m.id) + ".collection");
-            notify("âœ“ Modelo exportado.");
+            notify("✔ Modelo exportado.");
         }
         ImGui::SameLine();
         if (ImGui::Button("Excluir")) {
@@ -562,9 +566,9 @@ void UI::drawModelEditor() {
         }
         ImGui::PopItemWidth();
         ImGui::SameLine();
-        ImGui::PushItemWidth(140);
+        ImGui::PushItemWidth(200);
         int t = (int)e.fields[i].type;
-        if (ImGui::Combo("##t", &t, "Texto\0NÃºmero inteiro\0NÃºmero decimal\0Checkbox\0Data\0"))
+        if (ImGui::Combo("##t", &t, "Texto\0Número inteiro\0Número decimal\0Checkbox\0Data\0"))
             e.fields[i].type = (FieldType)t;
         ImGui::PopItemWidth();
         ImGui::SameLine();
@@ -573,7 +577,7 @@ void UI::drawModelEditor() {
         if (ImGui::ArrowButton("##d", ImGuiDir_Down) && i + 1 < e.fields.size()) down = (int)i;
         ImGui::SameLine();
         if (ImGui::SmallButton("Excluir")) {
-            // Passo 16 â€” confirmar se campo possui dados (somente campos jÃ¡ salvos)
+            // Passo 16 — confirmar se campo possui dados (somente campos já salvos)
             if (e.fields[i].id > 0 && m_models.fieldUseCount(e.fields[i].id) > 0) {
                 e.confirmFieldDelete = true;
                 e.pendingFieldDelete = e.fields[i].id;
@@ -587,7 +591,7 @@ void UI::drawModelEditor() {
     if (e.confirmFieldDelete && ImGui::BeginPopupModal("Excluir campo", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
         int64_t n = m_models.fieldUseCount(e.pendingFieldDelete);
         ImGui::Text("Este campo possui dados em %lld item(s).", (long long)n);
-        ImGui::TextUnformatted("Ao remover o campo, esses dados serÃ£o perdidos.");
+        ImGui::TextUnformatted("Ao remover o campo, esses dados serão perdidos.");
         ImGui::Separator();
         if (ImGui::Button("Cancelar")) {
             e.confirmFieldDelete = false;
@@ -644,7 +648,7 @@ void UI::drawModelEditor() {
             return true;
         });
         e.open = false;
-        notify("âœ“ Modelo salvo com sucesso.");
+        notify("✔ Modelo salvo com sucesso.");
     }
     ImGui::End();
 }
@@ -659,7 +663,7 @@ void UI::drawItemEditor() {
     }
     auto& e = m_editor;
 
-    // SeleÃ§Ã£o de modelo (Passo 22)
+    // Seleção de modelo (Passo 22)
     if (e.editingItemId < 0) {
         static int selModel = -1;
         auto all = m_models.getAll();
@@ -681,14 +685,14 @@ void UI::drawItemEditor() {
     std::vector<const char*> fnames = {"Sem pasta"};
     int cur = 0;
     for (size_t i = 0; i < folders.size(); ++i) {
-        fnames.push_back(folders[i].title.empty() ? "Pasta sem tÃ­tulo" : folders[i].title.c_str());
+        fnames.push_back(folders[i].title.empty() ? "Pasta sem título" : folders[i].title.c_str());
         if (e.folderId && *e.folderId == folders[i].id) cur = (int)i + 1;
     }
     fidx = cur;
     if (ImGui::Combo("Pasta", &fidx, fnames.data(), (int)fnames.size()))
         e.folderId = (fidx == 0) ? std::nullopt : std::optional<int64_t>(folders[fidx-1].id);
 
-    // Campos do modelo â€” vindos do banco (Regra 9/10)
+    // Campos do modelo — vindos do banco (Regra 9/10)
     if (e.selectedModelId > 0 || e.editingItemId > 0) {
         int64_t mid = e.editingItemId > 0 ? e.selectedModelId : e.selectedModelId;
         if (e.editingItemId > 0 && mid <= 0) {
@@ -778,7 +782,7 @@ void UI::drawItemEditor() {
             if (!order.empty() && !m_imgs.reorder(e.editingItemId, order)) return false;
             return true;
         });
-        notify(ok ? "âœ“ Item salvo com sucesso." : "âœ• Falha ao salvar o item.", !ok);
+        notify(ok ? "✔ Item salvo com sucesso." : "✘ Falha ao salvar o item.", !ok);
         if (ok) {
             e.open = false;
             e.values.clear();
@@ -837,14 +841,14 @@ void UI::drawImageStrip() {
         TextureHandle tex = (TextureHandle)nullptr;
         if (p.dbId > 0) tex = m_imgs.texture(p.dbId, 128);
         if (!tex && !p.data.empty()) {
-            // decodifica temporariamente para exibir novas imagens (sem upload dedicado â€” usa cache do db)
+            // decodifica temporariamente para exibir novas imagens (sem upload dedicado — usa cache do db)
             int w,h,c;
             unsigned char* px = stbi_load_from_memory(p.data.data(), (int)p.data.size(), &w, &h, &c, 4);
             if (px) stbi_image_free(px);
         }
         ImGui::Image(tex, ImVec2(96, 96), ImVec2(0,0), ImVec2(1,1),
                      ImVec4(1,1,1,1), ImVec4(0.2f,0.2f,0.25f,1));
-        if ((intptr_t)tex == 0) ImGui::TextColored(ImVec4(0.95f,0.6f,0.3f,1.f), "âš  imagem");
+        if ((intptr_t)tex == 0) ImGui::TextColored(ImVec4(0.95f,0.6f,0.3f,1.f), "⚠ imagem");
         if (ImGui::BeginDragDropSource()) {
             ImGui::SetDragDropPayload("IMG_REORDER", &i, sizeof(size_t));
             ImGui::Text("%s", p.filename.c_str());
@@ -853,7 +857,7 @@ void UI::drawImageStrip() {
         if (ImGui::BeginDragDropTarget()) {
             if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("IMG_REORDER")) {
                 size_t src = *(const size_t*)pl->Data;
-                if (src != i) std::swap(e.images[src], e.images[i]); // mantÃ©m troca simples e persistida
+                if (src != i) std::swap(e.images[src], e.images[i]); // mantém troca simples e persistida
             }
             ImGui::EndDragDropTarget();
         }
@@ -978,7 +982,7 @@ void UI::drawConfirmDialogs() {
                 m_confirm = ConfirmKind::None;
                 done = true;
                 ImGui::CloseCurrentPopup();
-                notify("âœ“ Excluído.");
+                notify("✔ Excluído.");
             }
         } else if (m_confirm == ConfirmKind::DeleteFolder) {
             Folder f;
@@ -1001,7 +1005,7 @@ void UI::drawConfirmDialogs() {
                 m_confirm = ConfirmKind::None;
                 done = true;
                 ImGui::CloseCurrentPopup();
-                notify("âœ“ Pasta excluÃ­da.");
+                notify("✔ Pasta excluída.");
             }
         } else if (m_confirm == ConfirmKind::DeleteModel) {
             int64_t n = m_models.itemCount(m_confirmTarget);
@@ -1015,9 +1019,9 @@ void UI::drawConfirmDialogs() {
             }
             ImGui::SameLine();
             if (ImGui::Button("Excluir somente modelo")) {
-                // itens ficam Ã³rfÃ£os do modelo â€” bloqueado por FK; mover para "sem modelo" nÃ£o existe,
-                // entÃ£o exigimos escolha explÃ­cita: (FK ON DELETE CASCADE removeria os itens)
-                notify("âš  Use 'Excluir modelo e itens' quando houver itens.", true);
+                // itens ficam órfãos do modelo — bloqueado por FK; mover para "sem modelo" não existe,
+                // então exigimos escolha explícita: (FK ON DELETE CASCADE removeria os itens)
+                notify("⚠ Use 'Excluir modelo e itens' quando houver itens.", true);
                 m_confirm = ConfirmKind::None;
                 ImGui::CloseCurrentPopup();
             }
@@ -1027,7 +1031,7 @@ void UI::drawConfirmDialogs() {
                 m_confirm = ConfirmKind::None;
                 done = true;
                 ImGui::CloseCurrentPopup();
-                notify("âœ“ Modelo excluído.");
+                notify("✔ Modelo excluído.");
             }
         }
         if (done) m_confirmSecondary = false;
